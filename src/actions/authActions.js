@@ -1,49 +1,64 @@
-import React from "react";
 import { navigate } from "../navigationRef";
-//import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "../api/axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import firebaseConfig from "./../api/fireBase";
+import firebase from "firebase";
+import { useDispatch } from "react-redux";
 
-export const tryLocalSignin = (dispatch) => async () => {
-  const token = await AsyncStorage.getItem("token");
-  if (token) {
-    dispatch({ type: "signin", payload: token });
-    navigate("Info");
-  } else {
-    navigate("Home");
-  }
-};
+firebase.initializeApp(firebaseConfig);
 
-export const signup = (dispatch) => async ({ username, password }) => {
+export const signup = async (email, password) => {
   try {
-    const response = await axios.post("/signup", { email, password });
-    //await AsyncStorage.setItem("token", response.data.token);
-    dispatch({ type: "signup", payload: response.data.token });
-    navigate("TrackList");
+    await firebase.auth().createUserWithEmailAndPassword(email, password);
+
+    navigate("mainFlow");
+
+    //dispatch({ type: "signup", payload: response.data.token });
+    //navigate("TrackList");
   } catch (err) {
     console.log(err);
   }
 };
 
-export const signin = (dispatch) => async ({ username, password }) => {
+export const signin = (dispatch) => async (email, password) => {
   try {
-    const response = await axios.post("/signin", { username, password });
+    const setLoading = setIsLoading(dispatch);
+    setLoading(true);
+    await firebase.auth().signInWithEmailAndPassword(email, password);
+    console.log("AfterSignin");
+    setLoading(false);
+    navigate("mainFlow");
     //await AsyncStorage.setItem("token", response.data.token);
-    dispatch({ type: "signup", payload: response.data.token });
-    const user = response.data.user;
-    console.log({ user });
-    navigate("Info", {
-      username: user.username,
-      address: user.address,
-      age: user.age,
-      diagnose: user.diagnose,
-    });
+    //dispatch({ type: "signup", payload: response.data.token });
   } catch (err) {
     console.log(err);
   }
 };
 
-export const signout = (dispatch) => async () => {
+export const signout = async () => {
   //await AsyncStorage.removeItem("token");
-  dispatch({ type: "signout" });
-  navigate("loginFlow");
+  // dispatch({ type: "signout" });
+  //navigate("loginFlow");
+  try {
+    await firebase.auth().signOut();
+    navigate("loginFlow");
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const setUser = (dispatch) => (user) => {
+  dispatch({ type: "setUser", payload: user });
+};
+
+export const check = async () => {
+  await firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      SetUser(user);
+    }
+  });
+};
+
+export const setIsLoading = (dispatch) => (isLoading) => {
+  console.log("Loading Here", isLoading);
+  dispatch({ type: "updateIsLoading", payload: isLoading });
 };

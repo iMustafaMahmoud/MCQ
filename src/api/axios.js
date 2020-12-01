@@ -1,21 +1,20 @@
-// import axios from "axios";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
+import firebase from '@react-native-firebase/app'
 
-// const instance = axios.create({
-//   baseURL: "http://69ebce917c48.ngrok.io",
-// });
+const Api = () => {
+  return (
+    {var firebaseConfig = {
+  apiKey: "AIzaSyCsUHfQh_QJGtGxCqb0qxqePp9vNSIuJ1c",
+  authDomain: "social-app-1c9bd.firebaseapp.com",
+  databaseURL: "https://social-app-1c9bd.firebaseio.com",
+  projectId: "social-app-1c9bd",
+  storageBucket: "social-app-1c9bd.appspot.com",
+  messagingSenderId: "895544017938",
+  appId: "1:895544017938:web:2d6aefdeb5da8ad6c144cb",
+  measurementId: "G-H2GH28XJKE",
+}
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig)
+    }
+  )
 
-// instance.interceptors.request.use(
-//   async (config) => {
-//     const token = await AsyncStorage.getItem("token");
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (err) => {
-//     return Promise.reject(err);
-//   }
-// );
-
-// export default instance;
+}

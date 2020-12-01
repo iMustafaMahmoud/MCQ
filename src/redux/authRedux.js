@@ -1,23 +1,21 @@
-import React from 'react';
-
-
-
 const initialstate = {
-    token: null
-}
+  user: null,
+  isLoading: false,
+};
 
-const Reducer = (state = initialstate, action ) => {
-    switch (action.type) {
+const Reducer = (state = initialstate, action) => {
+  switch (action.type) {
     case "signup":
-      return { token: action.payload };
+      return { ...state, user: action.payload };
     case "signout":
-      return { token: null };
+      return { ...state, user: null };
+    case "setUser":
+      return { ...state, user: action.payload };
+    case "updateIsLoading":
+      return { ...state, isLoading: action.payload };
     default:
       return state;
   }
-}
-
-
-
+};
 
 export default Reducer;

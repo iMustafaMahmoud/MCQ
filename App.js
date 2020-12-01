@@ -1,35 +1,47 @@
 import React from "react";
-import { createAppContainer } from "react-navigation";
+import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
+import { createBottomTabNavigator } from "react-navigation-tabs";
+import { Image, Button, View } from "react-native";
 import "firebase/firestore";
-import Home from "./src/screens/Home";
-import Info from "./src/screens/Info";
-import QuizHome from "./src/screens/QuizHome";
+import { Provider } from "react-redux";
 import { setNavigator } from "./src/navigationRef";
 import { createStore } from "redux";
-import Reducer from "./src/redux/quizReducer";
-import { Provider } from "react-redux";
-import QuizScreen from "./src/screens/QuizScreen";
-import Finish from "./src/screens/Finish";
+import Reducer from "./src/redux/authRedux";
+import OnBoardingScreen from "./src/screens/OnBoardingScreen";
+import LoginScreen from "./src/screens/LoginScreen";
+import Signup from "./src/screens/SignupScreen";
+import Welcome from "./src/screens/WelcomeScreen";
+import Messages from "./src/screens/MessagesScreen";
+import Profile from "./src/screens/ProfileScreen";
+import { AntDesign } from "@expo/vector-icons";
+import NewPost from "./src/screens/NewPostScreen";
 
 const store = createStore(Reducer);
-const navigator = createStackNavigator(
-  {
-    Home: Home,
-    Info: Info,
-    QuizHome: QuizHome,
-    QuizScreen: QuizScreen,
-    Finish: Finish,
-  },
-  {
-    initialRouteName: "QuizHome",
-    defaultNavigationOptions: {
-      title: "",
-    },
-  }
-);
 
-const App = createAppContainer(navigator);
+const Home = createStackNavigator({
+  Welcome: Welcome,
+  NewPost: NewPost,
+});
+
+Home.navigationOptions = {
+  tabBarIcon: <AntDesign name="home" size={24} color="black" />,
+};
+
+const switchNavigator = createSwitchNavigator({
+  loginFlow: createStackNavigator({
+    BoardingScreen: OnBoardingScreen,
+    Login: LoginScreen,
+    Signup: Signup,
+  }),
+  mainFlow: createBottomTabNavigator({
+    Home: Home,
+    Messages: Messages,
+    Profile: Profile,
+  }),
+});
+
+const App = createAppContainer(switchNavigator);
 
 export default () => {
   return (
